@@ -920,12 +920,14 @@ MonoBehaviour:
   highScoreText: {fileID: 1358904209}
   gameOverText: {fileID: 1644062319}
   restartLevelInstructionsText: {fileID: 633271253}
-  lifeImage: {fileID: 412393112}
-  lifeSprites:
+  redLifeImage: {fileID: 412393112}
+  redLifeSprites:
   - {fileID: 21300000, guid: f7ca134ed70370286a679dcd8682a977, type: 3}
   - {fileID: 21300000, guid: 0b021ae11cf7e95a29347e2be84e8941, type: 3}
   - {fileID: 21300000, guid: d02eb230ed5fd155cb5dc6ddbc6e30e0, type: 3}
   - {fileID: 21300000, guid: c8654625b1aed68ef950113584485324, type: 3}
+  blueLifeImage: {fileID: 0}
+  blueLifeSprites: []
 --- !u!1 &556807291
 GameObject:
   m_ObjectHideFlags: 0
@@ -3119,6 +3121,7 @@ MonoBehaviour:
   shieldVisual1: {fileID: 255274331}
   shieldVisual2: {fileID: 1102008742}
   shieldVisual3: {fileID: 347802778}
+  isPlayerOne: 1
   laserSoundClip: {fileID: 8300000, guid: 87e4fc4432e4e24448b026324a8ff18b, type: 3}
   tripleShotSoundClip: {fileID: 8300000, guid: 13d96c6ebafb6004eba04ec2994b49b9, type: 3}
   shieldUpSoundClip: {fileID: 8300000, guid: 43aafe4b88bbaa743914746c7123a981, type: 3}

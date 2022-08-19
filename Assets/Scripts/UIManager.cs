@@ -14,12 +14,22 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private TMP_Text restartLevelInstructionsText;
     [SerializeField]
-    private Image lifeImage;
+    private Image redLifeImage;
     [SerializeField]
-    private Sprite[] lifeSprites;
+    private Sprite[] redLifeSprites;
+    [SerializeField]
+    private Image blueLifeImage;
+    [SerializeField]
+    private Sprite[] blueLifeSprites;
+
+    private GameManager gameManager;
+    private SpawnManager spawnManager;
 
     private int score = 0;
     private int highScore = 0;
+
+    private bool isPlayerOneDead = false;
+    private bool isPlayerTwoDead = false;
 
     // Start is called before the first frame update
     void Start()
@@ -29,6 +39,16 @@ public class UIManager : MonoBehaviour
         highScoreText.text = "High Score: " + highScore;
         gameOverText.enabled = false;
         restartLevelInstructionsText.enabled = false;
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        if (gameManager == null)
+        {
+            Debug.LogError("GameManager is null!");
+        }
+        spawnManager = GameObject.Find("SpawnManager").GetComponent<SpawnManager>();
+        if (spawnManager == null)
+        {
+            Debug.LogError("SpawnManager is null!");
+        }
     }
 
     public void UpdateScore(int points)
@@ -47,10 +67,25 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void UpdateLives(int currentLives)
+    public void UpdateLives(int currentLives, bool isPlayerOne)
     {
-        lifeImage.sprite = lifeSprites[currentLives];
-        if (currentLives <= 0)
+        if (isPlayerOne)
+        {
+            redLifeImage.sprite = redLifeSprites[currentLives];
+            if (currentLives <= 0)
+            {
+                isPlayerOneDead = true;
+            }
+        }
+        else
+        {
+            blueLifeImage.sprite = blueLifeSprites[currentLives];
+            if (currentLives <= 0)
+            {
+                isPlayerTwoDead = true;
+            }
+        }
+        if (isPlayerOneDead && isPlayerTwoDead || (!gameManager.GetIsCoOpMode()) && isPlayerOneDead)
         {
             DoGameOver();
         }
@@ -59,6 +94,8 @@ public class UIManager : MonoBehaviour
     private void DoGameOver()
     {
         restartLevelInstructionsText.enabled = true;
+        gameManager.GameOver();
+        spawnManager.OnPlayerDeath();
         StartCoroutine(FlickerGameOver());
         CheckHighScore();
     }

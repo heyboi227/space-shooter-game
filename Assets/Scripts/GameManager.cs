@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private GameObject panel;
     [SerializeField]
-    private bool isMultiplayerMode = false;
+    private bool isCoOpMode = false;
 
     void Start()
     {
@@ -22,13 +22,13 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.R) && isGameOver)
         {
-            if (!isMultiplayerMode)
+            if (!isCoOpMode)
             {
                 StartNewSinglePlayerGame();
             }
             else
             {
-                StartNewMultiplayerGame();
+                StartNewCoOpGame();
             }
         }
 
@@ -54,7 +54,7 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(1);
     }
 
-    public void StartNewMultiplayerGame()
+    public void StartNewCoOpGame()
     {
         SceneManager.LoadScene(2);
     }
@@ -67,11 +67,12 @@ public class GameManager : MonoBehaviour
 
     public void GoToMainMenu()
     {
+        Time.timeScale = 1;
         SceneManager.LoadScene(0);
     }
 
-    public bool GetIsMultiplayerMode()
+    public bool GetIsCoOpMode()
     {
-        return isMultiplayerMode;
+        return isCoOpMode;
     }
 }

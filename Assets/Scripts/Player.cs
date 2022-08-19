@@ -16,7 +16,6 @@ public class Player : MonoBehaviour
     private float canFire = -1f;
     [SerializeField]
     private int lives = PlayerConfig.lives;
-    private SpawnManager spawnManager;
     private UIManager uIManager;
     private GameManager gameManager;
     [SerializeField]
@@ -35,6 +34,9 @@ public class Player : MonoBehaviour
     private GameObject shieldVisual2;
     [SerializeField]
     private GameObject shieldVisual3;
+
+    [SerializeField]
+    private bool isPlayerOne;
 
     private int shieldLives = 0;
 
@@ -58,16 +60,11 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        spawnManager = GameObject.Find("SpawnManager").GetComponent<SpawnManager>();
         uIManager = GameObject.Find("Canvas").GetComponent<UIManager>();
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         audioSource = GetComponent<AudioSource>();
         thrusterAudioSource = GameObject.Find("GameManager").GetComponent<AudioSource>();
 
-        if (spawnManager == null)
-        {
-            Debug.LogError("SpawnManager is null!");
-        }
         if (uIManager == null)
         {
             Debug.LogError("UIManager is null!");
@@ -88,20 +85,28 @@ public class Player : MonoBehaviour
             thrusterAudioSource.Play();
         }
 
-        if (!gameManager.GetIsMultiplayerMode())
+        if (!gameManager.GetIsCoOpMode())
         {
             transform.position = new Vector3(PlayerConfig.startXPosition, PlayerConfig.startYPosition, PlayerConfig.startZPosition);
         }
 
-        uIManager.UpdateLives(lives);
+        uIManager.UpdateLives(lives, isPlayerOne);
     }
 
     // Update is called on each frame
     void Update()
     {
         MovementLogic();
+        ShootingLogic();
+    }
 
-        if (Input.GetKeyDown(KeyCode.Space) && Time.time > canFire)
+    void ShootingLogic()
+    {
+        if (Input.GetKeyDown(KeyCode.Space) && Time.time > canFire && isPlayerOne)
+        {
+            FireLaser();
+        }
+        else if (Input.GetKeyDown(KeyCode.KeypadEnter) && Time.time > canFire && !isPlayerOne)
         {
             FireLaser();
         }
@@ -109,11 +114,25 @@ public class Player : MonoBehaviour
 
     void MovementLogic()
     {
-        // Inputs for horizontal and vertical movement
-        float horizontalInput = Input.GetAxis("Horizontal");
-        float verticalInput = Input.GetAxis("Vertical");
+        Vector3 direction;
+        if (isPlayerOne)
+        {
+            // Inputs for horizontal and vertical movement (directional arrows)
+            float horizontalInput = Input.GetAxis("Horizontal-Arrows");
+            float verticalInput = Input.GetAxis("Vertical-Arrows");
 
-        Vector3 direction = new(horizontalInput, verticalInput, 0);
+            direction = new(horizontalInput, verticalInput, 0);
+        }
+        else
+        {
+            // Inputs for horizontal and vertical movement (W, A, S and D keys)
+            float horizontalInput = Input.GetAxis("Horizontal");
+            float verticalInput = Input.GetAxis("Vertical");
+
+            direction = new(horizontalInput, verticalInput, 0);
+
+
+        }
 
         // Move the player to the given direction with 5.0 speed
         transform.Translate(speed * Time.deltaTime * direction);
@@ -166,20 +185,15 @@ public class Player : MonoBehaviour
         audioSource.Play();
         lives--;
 
-        uIManager.UpdateLives(lives);
+        uIManager.UpdateLives(lives, isPlayerOne);
 
-        if (lives <= 0f)
+        if (lives <= 0)
         {
             Destroy(this.gameObject);
 
-            if (spawnManager != null)
-            {
-                gameManager.GameOver();
-                spawnManager.OnPlayerDeath();
-                thrusterAudioSource.Stop();
-                thrusterAudioSource.loop = false;
-                thrusterAudioSource.clip = null;
-            }
+            thrusterAudioSource.Stop();
+            thrusterAudioSource.loop = false;
+            thrusterAudioSource.clip = null;
         }
     }
 

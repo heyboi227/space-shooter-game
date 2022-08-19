@@ -12,6 +12,6 @@ EditorBuildSettings:
     path: Assets/Scenes/Game-Single Player Mode.unity
     guid: 96f1429122f8ad848b11f2b2e6e4ecd6
   - enabled: 1
-    path: Assets/Scenes/Game-Multiplayer Mode.unity
+    path: Assets/Scenes/Game-CoOp Mode.unity
     guid: cce2cf76fa7229546af2ff2f9c2f4d72
   m_configObjects: {}

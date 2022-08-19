@@ -511,7 +511,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 861870004}
         m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: StartNewMultiplayerGame
+        m_MethodName: StartNewCoOpGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -905,6 +905,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isGameOver: 0
   panel: {fileID: 0}
+  isCoOpMode: 0
 --- !u!4 &861870005
 Transform:
   m_ObjectHideFlags: 0
