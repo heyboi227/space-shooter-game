@@ -41,7 +41,8 @@ public class Player : MonoBehaviour
     private int shieldLives = 0;
 
     private AudioSource audioSource;
-    private AudioSource thrusterAudioSource;
+    private AudioSource thrusterAudioSourcePlayerOne;
+    private AudioSource thrusterAudioSourcePlayerTwo;
     [SerializeField]
     private AudioClip laserSoundClip;
     [SerializeField]
@@ -63,7 +64,8 @@ public class Player : MonoBehaviour
         uIManager = GameObject.Find("Canvas").GetComponent<UIManager>();
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         audioSource = GetComponent<AudioSource>();
-        thrusterAudioSource = GameObject.Find("GameManager").GetComponent<AudioSource>();
+        thrusterAudioSourcePlayerOne = GameObject.Find("ThrusterSourcePlayerOne").GetComponent<AudioSource>();
+        thrusterAudioSourcePlayerTwo = GameObject.Find("ThrusterSourcePlayerTwo").GetComponent<AudioSource>();
 
         if (uIManager == null)
         {
@@ -73,16 +75,21 @@ public class Player : MonoBehaviour
         {
             Debug.LogError("GameManager is null!");
         }
-        if (audioSource == null || thrusterAudioSource == null)
+        if (audioSource == null || thrusterAudioSourcePlayerOne == null || thrusterAudioSourcePlayerTwo == null)
         {
             Debug.LogError("AudioSource is null!");
         }
         else
         {
             audioSource.clip = laserSoundClip;
-            thrusterAudioSource.clip = thrusterSoundClip;
-            thrusterAudioSource.loop = true;
-            thrusterAudioSource.Play();
+            if (isPlayerOne)
+            {
+                PlaySound(thrusterAudioSourcePlayerOne, thrusterSoundClip);
+            }
+            else
+            {
+                PlaySound(thrusterAudioSourcePlayerTwo, thrusterSoundClip);
+            }
         }
 
         if (!gameManager.GetIsCoOpMode())
@@ -100,13 +107,35 @@ public class Player : MonoBehaviour
         ShootingLogic();
     }
 
+    void OnDestroy()
+    {
+        if (isPlayerOne)
+        {
+            StopSound(thrusterAudioSourcePlayerOne);
+        }
+        else
+        {
+            StopSound(thrusterAudioSourcePlayerTwo);
+        }
+    }
+
+    public void PlaySound(AudioSource audioSource, AudioClip audioClip)
+    {
+        audioSource.clip = audioClip;
+        audioSource.loop = true;
+        audioSource.Play();
+    }
+
+    public void StopSound(AudioSource audioSource)
+    {
+        audioSource.Stop();
+        audioSource.loop = false;
+        audioSource.clip = null;
+    }
+
     void ShootingLogic()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && Time.time > canFire && isPlayerOne)
-        {
-            FireLaser();
-        }
-        else if (Input.GetKeyDown(KeyCode.KeypadEnter) && Time.time > canFire && !isPlayerOne)
+        if ((Input.GetKeyDown(KeyCode.Space) && Time.time > canFire && isPlayerOne) || (Input.GetKeyDown(KeyCode.RightShift) && Time.time > canFire && !isPlayerOne))
         {
             FireLaser();
         }
@@ -190,10 +219,6 @@ public class Player : MonoBehaviour
         if (lives <= 0)
         {
             Destroy(this.gameObject);
-
-            thrusterAudioSource.Stop();
-            thrusterAudioSource.loop = false;
-            thrusterAudioSource.clip = null;
         }
     }
 
