@@ -38,10 +38,8 @@ public class Player : MonoBehaviour
 
     private int shieldLives = 0;
 
-    [SerializeField]
-    private int score = 0;
-
     private AudioSource audioSource;
+    private AudioSource thrusterAudioSource;
     [SerializeField]
     private AudioClip laserSoundClip;
     [SerializeField]
@@ -54,15 +52,17 @@ public class Player : MonoBehaviour
     private AudioClip powerupPickupSoundClip;
     [SerializeField]
     private AudioClip lifeDownSoundClip;
+    [SerializeField]
+    private AudioClip thrusterSoundClip;
 
     // Start is called before the first frame update
     void Start()
     {
-        transform.position = new Vector3(PlayerConfig.startXPosition, PlayerConfig.startYPosition, PlayerConfig.startZPosition);
         spawnManager = GameObject.Find("SpawnManager").GetComponent<SpawnManager>();
         uIManager = GameObject.Find("Canvas").GetComponent<UIManager>();
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         audioSource = GetComponent<AudioSource>();
+        thrusterAudioSource = GameObject.Find("GameManager").GetComponent<AudioSource>();
 
         if (spawnManager == null)
         {
@@ -76,13 +76,21 @@ public class Player : MonoBehaviour
         {
             Debug.LogError("GameManager is null!");
         }
-        if (audioSource == null)
+        if (audioSource == null || thrusterAudioSource == null)
         {
             Debug.LogError("AudioSource is null!");
         }
         else
         {
             audioSource.clip = laserSoundClip;
+            thrusterAudioSource.clip = thrusterSoundClip;
+            thrusterAudioSource.loop = true;
+            thrusterAudioSource.Play();
+        }
+
+        if (!gameManager.GetIsMultiplayerMode())
+        {
+            transform.position = new Vector3(PlayerConfig.startXPosition, PlayerConfig.startYPosition, PlayerConfig.startZPosition);
         }
 
         uIManager.UpdateLives(lives);
@@ -168,6 +176,9 @@ public class Player : MonoBehaviour
             {
                 gameManager.GameOver();
                 spawnManager.OnPlayerDeath();
+                thrusterAudioSource.Stop();
+                thrusterAudioSource.loop = false;
+                thrusterAudioSource.clip = null;
             }
         }
     }
@@ -253,7 +264,6 @@ public class Player : MonoBehaviour
 
     public void IncreaseScore(int points)
     {
-        score += points;
-        uIManager.SetScoreText(score);
+        uIManager.UpdateScore(points);
     }
 }

@@ -10,7 +10,7 @@ public class Enemy_Asteroid2 : Enemy
                 DamageEnemy(other);
                 if (lives <= 0)
                 {
-                    player.IncreaseScore(points);
+                    uiManager.UpdateScore(points);
                     SetSpritesVisibility(false, false);
                     StartCoroutine(AnimationRoutine());
                 }
@@ -21,6 +21,7 @@ public class Enemy_Asteroid2 : Enemy
                 break;
 
             case "Player":
+                player = other.transform.GetComponent<Player>();
                 if (player != null)
                 {
                     player.DamagePlayer();

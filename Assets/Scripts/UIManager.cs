@@ -8,6 +8,8 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private TMP_Text scoreText;
     [SerializeField]
+    private TMP_Text highScoreText;
+    [SerializeField]
     private TMP_Text gameOverText;
     [SerializeField]
     private TMP_Text restartLevelInstructionsText;
@@ -16,17 +18,33 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private Sprite[] lifeSprites;
 
+    private int score = 0;
+    private int highScore = 0;
+
     // Start is called before the first frame update
     void Start()
     {
         scoreText.text = "Score: 0";
-        gameOverText.text = "";
+        highScore = PlayerPrefs.GetInt("HighScore", 0);
+        highScoreText.text = "High Score: " + highScore;
+        gameOverText.enabled = false;
         restartLevelInstructionsText.enabled = false;
     }
 
-    public void SetScoreText(int score)
+    public void UpdateScore(int points)
     {
+        score += points;
         scoreText.text = "Score: " + score;
+    }
+
+    public void CheckHighScore()
+    {
+        if (highScore < score)
+        {
+            highScore = score;
+            PlayerPrefs.SetInt("HighScore", highScore);
+            highScoreText.text = "High score: " + highScore;
+        }
     }
 
     public void UpdateLives(int currentLives)
@@ -42,10 +60,12 @@ public class UIManager : MonoBehaviour
     {
         restartLevelInstructionsText.enabled = true;
         StartCoroutine(FlickerGameOver());
+        CheckHighScore();
     }
 
     IEnumerator FlickerGameOver()
     {
+        gameOverText.enabled = true;
         while (true)
         {
             gameOverText.text = "Game Over";

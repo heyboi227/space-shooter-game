@@ -16,15 +16,6 @@ public class Powerup : MonoBehaviour
     [SerializeField]
     private PowerupTypes powerupType;
 
-    void Start()
-    {
-        player = GameObject.Find("Player").GetComponent<Player>();
-        if (player == null)
-        {
-            Debug.LogError("Error: Player is null!");
-        }
-    }
-
     // Update is called once per frame
     void Update()
     {
@@ -32,7 +23,7 @@ public class Powerup : MonoBehaviour
 
         if (transform.position.y <= Config.lowerLimit)
         {
-            Destroy(this.gameObject);
+            Destroy(gameObject);
         }
     }
 
@@ -44,6 +35,7 @@ public class Powerup : MonoBehaviour
                 switch (powerupType)
                 {
                     case PowerupTypes.Shield:
+                        player = other.transform.GetComponent<Player>();
                         if (player != null)
                         {
                             player.ActivateShield();
@@ -51,6 +43,7 @@ public class Powerup : MonoBehaviour
                         break;
 
                     case PowerupTypes.TripleShot:
+                        player = other.transform.GetComponent<Player>();
                         if (player != null)
                         {
                             player.ActivateTripleShot();
@@ -58,6 +51,7 @@ public class Powerup : MonoBehaviour
                         break;
 
                     case PowerupTypes.SpeedBoost:
+                        player = other.transform.GetComponent<Player>();
                         if (player != null)
                         {
                             player.ActivateSpeedBoost();

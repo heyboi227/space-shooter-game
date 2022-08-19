@@ -10,12 +10,13 @@ public class Enemy_Asteroid1 : Enemy
                 DamageEnemy(other);
                 if (lives <= 0)
                 {
-                    player.IncreaseScore(points);
+                    uiManager.UpdateScore(points);
                     StartCoroutine(AnimationRoutine());
                 }
                 break;
 
             case "Player":
+                player = other.transform.GetComponent<Player>();
                 if (player != null)
                 {
                     player.DamagePlayer();

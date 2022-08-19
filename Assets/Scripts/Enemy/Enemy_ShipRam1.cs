@@ -47,7 +47,7 @@ public class Enemy_ShipRam1 : Enemy
                 DamageEnemy(other);
                 if (lives <= 0)
                 {
-                    player.IncreaseScore(points);
+                    uiManager.UpdateScore(points);
                     transform.GetChild(0).gameObject.SetActive(false);
                     lockRotation = true;
                     audioSource.clip = explosionSoundClip;
@@ -56,6 +56,7 @@ public class Enemy_ShipRam1 : Enemy
                 break;
 
             case "Player":
+                player = other.transform.GetComponent<Player>();
                 if (player != null)
                 {
                     player.DamagePlayer();

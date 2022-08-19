@@ -7,6 +7,8 @@ public class GameManager : MonoBehaviour
     private bool isGameOver = false;
     [SerializeField]
     private GameObject panel;
+    [SerializeField]
+    private bool isMultiplayerMode = false;
 
     void Start()
     {
@@ -20,7 +22,14 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.R) && isGameOver)
         {
-            StartNewGame();
+            if (!isMultiplayerMode)
+            {
+                StartNewSinglePlayerGame();
+            }
+            else
+            {
+                StartNewMultiplayerGame();
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -40,9 +49,14 @@ public class GameManager : MonoBehaviour
         isGameOver = true;
     }
 
-    public void StartNewGame()
+    public void StartNewSinglePlayerGame()
     {
         SceneManager.LoadScene(1);
+    }
+
+    public void StartNewMultiplayerGame()
+    {
+        SceneManager.LoadScene(2);
     }
 
     public void ResumeGame()
@@ -54,5 +68,10 @@ public class GameManager : MonoBehaviour
     public void GoToMainMenu()
     {
         SceneManager.LoadScene(0);
+    }
+
+    public bool GetIsMultiplayerMode()
+    {
+        return isMultiplayerMode;
     }
 }
